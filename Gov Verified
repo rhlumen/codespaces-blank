@@ -1,0 +1,350 @@
+--create table aa_temp_gov_verified_oct as
+select --Cust Type F
+  AI.ACCRUAL_INSTANTIATED_DT,
+  ac.ACCOUNTING_PERIOD_CD,
+  ac.ACCRUAL_INSTANCE_ID,
+  ac.ECCKT_AML_ID,
+  ac.SAP_ACCOUNT_CD,
+  GA.SAP_ACCOUNT_DESC,
+  AC.ACCRUAL_ACTIVE_IND,
+  ovr.TRAFFIC_AUDIT_REQUEST_IND,
+  ovr.MARGIN_ANALYSIS_STATUS_CD,
+  xref.MATCH_DISPOSITION_TYP,
+  OPS.RPT_SUB_DISPOSITION_TYP,
+  GA.GL_ACCOUNT_HIER_TIER3_DESC,
+  GA.GL_ACCOUNT_HIER_TIER4_DESC, 
+GA.GL_ACCOUNT_HIER_TIER5_DESC,
+  ac.GL_CUST_TYPE_CD,
+  ct.GL_CUST_TYPE_DESC,
+  ac.GL_FIN_PRODUCT_LINE_CD,
+  ac.GL_FIN_PRODUCT_CD,
+  ac.OFFNET_ORDER_ODS_ID,
+  ovr.RESEARCH_NOTE_TXT,
+  ovr.RESEARCH_OWNER_NAME,
+  ovr.source_last_modify_user_id,
+  ac.SUPPLIER_BILL_ACCT_ODS_ID,
+  e.BAN_NBR,
+  e.VENDOR_NAME,
+  AC.LVLT_ULTIMATE_SUPPLIER_NAME,
+  ac.SUPPLIER_CIRCUIT_ODS_ID,
+  ac.ECCKT_RAW_NAME,
+  ac.ECCKT_STRIPPED_NAME,
+  case
+    when ac.CIRCUIT_LAST_BILL_DT = sc.CIRCUIT_LAST_BILL_DT then ac.CIRCUIT_LAST_BILL_DT
+  else sc.CIRCUIT_LAST_BILL_DT
+  end as CIRCUIT_LAST_BILL_DT,
+  ac.GL_USD_AMT,
+  ac.GL_SRC_AMT,
+  xref.BILLING_PRODUCT_COMPNT_ODS_ID as xref_bpc_ods_id,
+  ovr.rev_product_compnt_id as ovr_rpc_id,
+  e.BILLING_PRODUCT_COMPNT_ODS_ID as ecckt_bpc_ods_id,
+  e.rev_product_compnt_id as ecckt_rpc_id,
+  bpc.SERV_ACTIVE_DT as exref_serv_active_dt, 
+bpc.SERV_INACTIVE_DT as exref_serv_inactive_dt, 
+  bpc1.SERV_ACTIVE_DT as ecckt_serv_active_dt,
+bpc1.SERV_INACTIVE_DT as ecckt_serv_inactive_dt,
+  xref.BILL_COMPNT_SERV_ACTIVE_DT,
+  xref.BILL_COMPNT_SERV_INACTIVE_DT,
+  xref.BILL_PROD_PREP_BILL_START_DT,
+  xref.BILL_PROD_PREP_BILL_STOP_DT,
+  xref.BILL_PROD_PREP_STATUS_CD,
+  xref.CUST_ORDER_NBR,
+  xref.CUST_BILL_START_DT,
+  xref.CUST_LAST_BILL_DT,
+  xref.CUST_ORDER_CMPLT_DT,
+  xref.CUST_ORDER_PRODUCT_ODS_ID,
+  xref.ORDER_COMPNT_ACTION_TYP,
+  xref.SERV_COMPNT_ORDER_TYP,
+  xref.serv_order_status_cd,
+  xref.serv_order_typ,
+  e.PRODUCT_INST_ID,
+  e.SERV_COMPNT_ID,
+  e.PON_NBR,
+  e.ASR_ACTIVITY_DESC,
+  e.ASR_STATUS_CD,
+  e.FOC_DT,
+  e.LAST_GTZ_MRC_BILL_DT,
+  e.CLEAN_AEND_CLLI_CD,
+  e.CLEAN_ZEND_CLLI_CD,
+  e.BANDWIDTH_CD,
+  AC.ACNA_CD,
+  ed.DISCONNECT_CUST_ORDER_NBR,
+  ed.DISCONNECT_FOC_DT,
+  ed.DISCONNECT_PON_NBR,
+  ed.RFT_STATUS_CD,
+  ed.VENDOR_ORDER_NBR,
+  xref.CUST_ODS_ID,
+  cust.CUST_NBR,
+cust.CUST_NAME,
+cba.BILL_ACCOUNT_NBR,
+cba.BILL_ACCOUNT_NAME,
+  ac.CUST_GL_LOB_CD,
+  ac.CUST_GL_PRODUCT_CD,
+  ac.AEND_GL_BUSINESS_AREA_CD,
+  ac.ZEND_GL_BUSINESS_AREA_CD,
+  BA.GL_BUSINESS_AREA_REGION_CD AS GL_BUSINESS_AREA_REGION_CD_A,
+  BA1.GL_BUSINESS_AREA_REGION_CD AS GL_BUSINESS_AREA_REGION_CD_Z,
+  AC.DW_SOURCE_SYSTEM_CD  AS AC_DW_SOURCE_SYSTEM_CD,
+  ac.DW_SECURE_COMPANY_NBR,
+  E.DW_SOURCE_SYSTEM_CD  AS E_DW_OURCE_SYSTEM_CD,
+  CASE 
+    WHEN E.DW_SOURCE_SYSTEM_CD='NETEX-SAM' THEN 'VENDOR BILLED'
+      Else'PLANNED COST'
+  END AS ACCRUAL_TYP,
+  AC.GL_COMPANY_CD,
+  AC.LEGACY_COMPANY_NAME,
+  ovr.ALT_CIRCUIT_NAME,
+  ovr.COLO_PANEL_ADDR,
+  ovr.COLO_PORT_ADDR,
+  ovr.DW_LAST_MODIFY_DT,
+  ovr.OVERRIDE_IND,
+  ovr.QC_FOLLOWUP_DT,
+  ovr.SUPPLIER_CIRCUIT_SRC_ID,
+  ovr.DW_CREATE_DT,
+  ovr.DW_SOURCE_SYSTEM_CD as OVR_DW_SOURCE_SYSTEM_CD,
+  AC.LAST_BAN_BILL_DT,
+  AC.LTID_NAME,
+  dis.DER_SERV_DISCO_DT,
+  dis.DER_SERV_DISCO_DT_SRC_TYP,
+  dis.VBR_USD_SPOT_TOTAL_AMT,
+  dis.USD_SPOT_EXPENSE_AMT,
+  exref.ACCESS_MGMT_REF_ID,
+  exref.ACCESS_MGMT_REF_SOURCE_NAME,
+  xref.ACCRUAL_GL_MGMT_PRODUCT_ODS_ID,
+  xref.ACCRUAL_GL_MGMT_PRODUCT_CD,
+  prod.MGMT_PRODUCT_HIER_TIER0_DESC,
+  prod.MGMT_PRODUCT_HIER_TIER1_DESC,
+  prod.MGMT_PRODUCT_HIER_TIER2_DESC,
+  prod.MGMT_PRODUCT_HIER_TIER3_DESC,
+  prod.MGMT_PRODUCT_HIER_TIER4_DESC,
+  prod.MGMT_PRODUCT_HIER_TIER5_DESC,
+  prod.MGMT_PRODUCT_HIER_TIER6_DESC 
+from
+  DSL_AIM.ACCRUAL_CHARGE_hist AC
+    LEFT JOIN CODS_FINANCE.GL_ACCOUNT GA
+        ON GA.SAP_ACCOUNT_CD = AC.SAP_ACCOUNT_CD
+    LEFT JOIN UDL_NETEX.ACCRUAL_INSTANTIATED_MV AI
+        ON AI.ACCRUAL_INSTANCE_ID = AC.ACCRUAL_INSTANCE_ID
+    left join CODS_FINANCE.GL_customer_type ct
+        on ac.GL_CUST_TYPE_CD = ct.GL_CUST_TYPE_CD
+    left join cods_netex.supplier_circuit sc
+        on ac.supplier_circuit_ods_id = sc.supplier_circuit_ods_id
+    LEFT JOIN CODS_FINANCE.GL_BUSINESS_AREA BA
+        ON BA.GL_BUSINESS_AREA_CD = AC.AEND_GL_BUSINESS_AREA_CD   
+    LEFT JOIN CODS_FINANCE.GL_BUSINESS_AREA BA1
+        ON BA1.GL_BUSINESS_AREA_CD = AC.ZEND_GL_BUSINESS_AREA_CD  
+    LEFT JOIN DSL_MARGIN.ECCKT_CUST_SERV_XREF xref
+        on AC.ACCRUAL_INSTANCE_ID = xref.ACCRUAL_INSTANCE_ID
+    left join dsl_aim.netex_revenue_match_ovr ovr
+        on ac.ACCRUAL_INSTANCE_ID = ovr.ACCRUAL_INSTANCE_ID
+    left join dsl_aml.ecckt e
+        on ac.ECCKT_AML_ID = e.ECCKT_AML_ID
+    left join cods_billing.billing_product_compnt bpc
+        on xref.BILLING_PRODUCT_COMPNT_ODS_ID = bpc.BILLING_PRODUCT_COMPNT_ODS_ID
+    left join cods_billing.billing_product_compnt bpc1
+        on e.BILLING_PRODUCT_COMPNT_ODS_ID = bpc1.BILLING_PRODUCT_COMPNT_ODS_ID
+    left join cods.customer cust
+        on xref.CUST_ODS_ID = cust.CUST_ODS_ID
+    left join CODS.BILLING_ACCOUNT cba
+        on bpc.BILL_ACCOUNT_ODS_ID = cba.BILL_ACCOUNT_ODS_ID
+    LEFT JOIN UDL_NETEX.RPT_DISPOSITION_ATTR_MV OPS
+        ON OPS.RPT_ATTRIBUTION_VALUE = AC.ACCRUAL_INSTANCE_ID
+    left join dsl_aml.ecckt_disconnect ed
+        on ac.ECCKT_AML_ID = ed.ECCKT_AML_ID
+    LEFT JOIN DSL_MARGIN.ECCKT_CUST_SERV_DISCO dis
+        on dis.accrual_instance_id = ac.accrual_instance_id
+    LEFT JOIN DSL_AML.ECCKT_XREF exref
+        ON AC.ECCKT_AML_ID = exref.ECCKT_AML_ID
+    left join cods_finance.gl_mgmt_product prod
+        on xref.ACCRUAL_GL_MGMT_PRODUCT_ODS_ID = prod.GL_MGMT_PRODUCT_ODS_ID
+where
+  ac.GL_USD_AMT <> 0
+  and upper(ac.GL_CUST_TYPE_CD) = 'F' 
+  and upper(GA.GL_ACCOUNT_HIER_TIER3_DESC) = 'DIRECT NETEX'
+  and ac.DW_SECURE_COMPANY_NBR = 1
+  and ac.accounting_period_cd in ('2023-10')
+---------------------------------------------------------------------
+union all
+---------------------------------------------------------------------
+select --Gov Verified Cases
+  AI.ACCRUAL_INSTANTIATED_DT,
+  ac.ACCOUNTING_PERIOD_CD,
+  ac.ACCRUAL_INSTANCE_ID,
+  ac.ECCKT_AML_ID,
+  ac.SAP_ACCOUNT_CD,
+  GA.SAP_ACCOUNT_DESC,
+  AC.ACCRUAL_ACTIVE_IND,
+  ovr.TRAFFIC_AUDIT_REQUEST_IND,
+  ovr.MARGIN_ANALYSIS_STATUS_CD,
+  xref.MATCH_DISPOSITION_TYP,
+  OPS.RPT_SUB_DISPOSITION_TYP,
+  GA.GL_ACCOUNT_HIER_TIER3_DESC,
+  GA.GL_ACCOUNT_HIER_TIER4_DESC, 
+GA.GL_ACCOUNT_HIER_TIER5_DESC,
+  ac.GL_CUST_TYPE_CD,
+  ct.GL_CUST_TYPE_DESC,
+  ac.GL_FIN_PRODUCT_LINE_CD,
+  ac.GL_FIN_PRODUCT_CD,
+  ac.OFFNET_ORDER_ODS_ID,
+  ovr.RESEARCH_NOTE_TXT,
+  ovr.RESEARCH_OWNER_NAME,
+  ovr.source_last_modify_user_id,
+  ac.SUPPLIER_BILL_ACCT_ODS_ID,
+  e.BAN_NBR,
+  e.VENDOR_NAME,
+  AC.LVLT_ULTIMATE_SUPPLIER_NAME,
+  ac.SUPPLIER_CIRCUIT_ODS_ID,
+  ac.ECCKT_RAW_NAME,
+  ac.ECCKT_STRIPPED_NAME,
+  case
+    when ac.CIRCUIT_LAST_BILL_DT = sc.CIRCUIT_LAST_BILL_DT then ac.CIRCUIT_LAST_BILL_DT
+  else sc.CIRCUIT_LAST_BILL_DT
+  end as CIRCUIT_LAST_BILL_DT,
+  ac.GL_USD_AMT,
+  ac.GL_SRC_AMT,
+  xref.BILLING_PRODUCT_COMPNT_ODS_ID as xref_bpc_ods_id,
+  ovr.rev_product_compnt_id as ovr_rpc_id,
+  e.BILLING_PRODUCT_COMPNT_ODS_ID as ecckt_bpc_ods_id,
+  e.rev_product_compnt_id as ecckt_rpc_id,
+  bpc.SERV_ACTIVE_DT as exref_serv_active_dt, 
+bpc.SERV_INACTIVE_DT as exref_serv_inactive_dt, 
+  bpc1.SERV_ACTIVE_DT as ecckt_serv_active_dt,
+bpc1.SERV_INACTIVE_DT as ecckt_serv_inactive_dt,
+  xref.BILL_COMPNT_SERV_ACTIVE_DT,
+  xref.BILL_COMPNT_SERV_INACTIVE_DT,
+  xref.BILL_PROD_PREP_BILL_START_DT,
+  xref.BILL_PROD_PREP_BILL_STOP_DT,
+  xref.BILL_PROD_PREP_STATUS_CD,
+  xref.CUST_ORDER_NBR,
+  xref.CUST_BILL_START_DT,
+  xref.CUST_LAST_BILL_DT,
+  xref.CUST_ORDER_CMPLT_DT,
+  xref.CUST_ORDER_PRODUCT_ODS_ID,
+  xref.ORDER_COMPNT_ACTION_TYP,
+  xref.SERV_COMPNT_ORDER_TYP,
+  xref.serv_order_status_cd,
+  xref.serv_order_typ,
+  e.PRODUCT_INST_ID,
+  e.SERV_COMPNT_ID,
+  e.PON_NBR,
+  e.ASR_ACTIVITY_DESC,
+  e.ASR_STATUS_CD,
+  e.FOC_DT,
+  e.LAST_GTZ_MRC_BILL_DT,
+  e.CLEAN_AEND_CLLI_CD,
+  e.CLEAN_ZEND_CLLI_CD,
+  e.BANDWIDTH_CD,
+  AC.ACNA_CD,
+  ed.DISCONNECT_CUST_ORDER_NBR,
+  ed.DISCONNECT_FOC_DT,
+  ed.DISCONNECT_PON_NBR,
+  ed.RFT_STATUS_CD,
+  ed.VENDOR_ORDER_NBR,
+  xref.CUST_ODS_ID,
+  cust.CUST_NBR,
+cust.CUST_NAME,
+cba.BILL_ACCOUNT_NBR,
+cba.BILL_ACCOUNT_NAME,
+  ac.CUST_GL_LOB_CD,
+  ac.CUST_GL_PRODUCT_CD,
+  ac.AEND_GL_BUSINESS_AREA_CD,
+  ac.ZEND_GL_BUSINESS_AREA_CD,
+  BA.GL_BUSINESS_AREA_REGION_CD AS GL_BUSINESS_AREA_REGION_CD_A,
+  BA1.GL_BUSINESS_AREA_REGION_CD AS GL_BUSINESS_AREA_REGION_CD_Z,
+  AC.DW_SOURCE_SYSTEM_CD  AS AC_DW_SOURCE_SYSTEM_CD,
+  ac.DW_SECURE_COMPANY_NBR,
+  E.DW_SOURCE_SYSTEM_CD  AS E_DW_OURCE_SYSTEM_CD,
+  CASE 
+    WHEN E.DW_SOURCE_SYSTEM_CD='NETEX-SAM' THEN 'VENDOR BILLED'
+      Else'PLANNED COST'
+  END AS ACCRUAL_TYP,
+  AC.GL_COMPANY_CD,
+  AC.LEGACY_COMPANY_NAME,
+  ovr.ALT_CIRCUIT_NAME,
+  ovr.COLO_PANEL_ADDR,
+  ovr.COLO_PORT_ADDR,
+  ovr.DW_LAST_MODIFY_DT,
+  ovr.OVERRIDE_IND,
+  ovr.QC_FOLLOWUP_DT,
+  ovr.SUPPLIER_CIRCUIT_SRC_ID,
+  ovr.DW_CREATE_DT,
+  ovr.DW_SOURCE_SYSTEM_CD as OVR_DW_SOURCE_SYSTEM_CD,
+  AC.LAST_BAN_BILL_DT,
+  AC.LTID_NAME,
+  dis.DER_SERV_DISCO_DT,
+  dis.DER_SERV_DISCO_DT_SRC_TYP,
+  dis.VBR_USD_SPOT_TOTAL_AMT,
+  dis.USD_SPOT_EXPENSE_AMT,
+  exref.ACCESS_MGMT_REF_ID,
+  exref.ACCESS_MGMT_REF_SOURCE_NAME,
+  xref.ACCRUAL_GL_MGMT_PRODUCT_ODS_ID,
+  xref.ACCRUAL_GL_MGMT_PRODUCT_CD,
+  prod.MGMT_PRODUCT_HIER_TIER0_DESC,
+  prod.MGMT_PRODUCT_HIER_TIER1_DESC,
+  prod.MGMT_PRODUCT_HIER_TIER2_DESC,
+  prod.MGMT_PRODUCT_HIER_TIER3_DESC,
+  prod.MGMT_PRODUCT_HIER_TIER4_DESC,
+  prod.MGMT_PRODUCT_HIER_TIER5_DESC,
+  prod.MGMT_PRODUCT_HIER_TIER6_DESC 
+from
+  DSL_AIM.ACCRUAL_CHARGE_hist AC
+    LEFT JOIN CODS_FINANCE.GL_ACCOUNT GA
+        ON GA.SAP_ACCOUNT_CD = AC.SAP_ACCOUNT_CD
+    LEFT JOIN UDL_NETEX.ACCRUAL_INSTANTIATED_MV AI
+        ON AI.ACCRUAL_INSTANCE_ID = AC.ACCRUAL_INSTANCE_ID
+    left join CODS_FINANCE.GL_customer_type ct
+        on ac.GL_CUST_TYPE_CD = ct.GL_CUST_TYPE_CD
+    left join cods_netex.supplier_circuit sc
+        on ac.supplier_circuit_ods_id = sc.supplier_circuit_ods_id
+    LEFT JOIN CODS_FINANCE.GL_BUSINESS_AREA BA
+        ON BA.GL_BUSINESS_AREA_CD = AC.AEND_GL_BUSINESS_AREA_CD   
+    LEFT JOIN CODS_FINANCE.GL_BUSINESS_AREA BA1
+        ON BA1.GL_BUSINESS_AREA_CD = AC.ZEND_GL_BUSINESS_AREA_CD  
+    LEFT JOIN DSL_MARGIN.ECCKT_CUST_SERV_XREF xref
+        on AC.ACCRUAL_INSTANCE_ID = xref.ACCRUAL_INSTANCE_ID
+    left join dsl_aim.netex_revenue_match_ovr ovr
+        on ac.ACCRUAL_INSTANCE_ID = ovr.ACCRUAL_INSTANCE_ID
+    left join dsl_aml.ecckt e
+        on ac.ECCKT_AML_ID = e.ECCKT_AML_ID
+    left join cods_billing.billing_product_compnt bpc
+        on xref.BILLING_PRODUCT_COMPNT_ODS_ID = bpc.BILLING_PRODUCT_COMPNT_ODS_ID
+    left join cods_billing.billing_product_compnt bpc1
+        on e.BILLING_PRODUCT_COMPNT_ODS_ID = bpc1.BILLING_PRODUCT_COMPNT_ODS_ID
+    left join cods.customer cust
+        on xref.CUST_ODS_ID = cust.CUST_ODS_ID
+    left join CODS.BILLING_ACCOUNT cba
+        on bpc.BILL_ACCOUNT_ODS_ID = cba.BILL_ACCOUNT_ODS_ID
+    LEFT JOIN UDL_NETEX.RPT_DISPOSITION_ATTR_MV OPS
+        ON OPS.RPT_ATTRIBUTION_VALUE = AC.ACCRUAL_INSTANCE_ID
+    left join dsl_aml.ecckt_disconnect ed
+        on ac.ECCKT_AML_ID = ed.ECCKT_AML_ID
+    LEFT JOIN DSL_MARGIN.ECCKT_CUST_SERV_DISCO dis
+        on dis.accrual_instance_id = ac.accrual_instance_id
+    LEFT JOIN DSL_AML.ECCKT_XREF exref
+        ON AC.ECCKT_AML_ID = exref.ECCKT_AML_ID
+    left join cods_finance.gl_mgmt_product prod
+        on xref.ACCRUAL_GL_MGMT_PRODUCT_ODS_ID = prod.GL_MGMT_PRODUCT_ODS_ID
+where
+  ac.GL_USD_AMT <> 0
+  and (
+    upper(xref.MATCH_DISPOSITION_TYP) like ('%GOVT VERIFIED%')
+    or upper(xref.MATCH_DISPOSITION_TYP) like ('%GOV VERIFIED%')
+    or upper(xref.MATCH_DISPOSITION_TYP) like ('%GOVERNMENT VERIFIED%')
+    or upper(xref.MATCH_DISPOSITION_TYP) like ('%GOVERNMENT MATCHED VERIFIED%')
+    or upper(xref.MATCH_DISPOSITION_TYP) like ('%GOVERNMENT NEED VERIFIED%')
+    or upper(xref.MATCH_DISPOSITION_TYP) like ('%GOVERNMENT NEEDS VERIFY%')
+    or upper(xref.MATCH_DISPOSITION_TYP) like ('%GOVERNMENT NEED VERIFY%')
+    or upper(xref.MATCH_DISPOSITION_TYP) like ('%GOVT NEED VERIFIED%')
+    or upper(ovr.MARGIN_ANALYSIS_STATUS_CD) like ('%GOVT VERIFIED%')
+    or upper(ovr.MARGIN_ANALYSIS_STATUS_CD) like ('%GOV VERIFIED%')
+    or upper(ovr.MARGIN_ANALYSIS_STATUS_CD) like ('%GOVERNMENT VERIFIED%')
+    or upper(ovr.MARGIN_ANALYSIS_STATUS_CD) like ('%GOVERNMENT MATCHED VERIFIED%')
+    or upper(ovr.MARGIN_ANALYSIS_STATUS_CD) like ('%GOVERNMENT NEED VERIFIED%')
+    or upper(ovr.MARGIN_ANALYSIS_STATUS_CD) like ('%GOVERNMENT NEEDS VERIFY%')
+    or upper(ovr.MARGIN_ANALYSIS_STATUS_CD) like ('%GOVERNMENT NEED VERIFY%')
+    or upper(ovr.MARGIN_ANALYSIS_STATUS_CD) like ('%GOVT NEED VERIFIED%')
+  )
+  and upper(GA.GL_ACCOUNT_HIER_TIER3_DESC) = 'DIRECT NETEX'
+  and upper(ac.GL_CUST_TYPE_CD) not in ('F') 
+  and ac.DW_SECURE_COMPANY_NBR = 1
+  and ac.accounting_period_cd in ('2023-10');
